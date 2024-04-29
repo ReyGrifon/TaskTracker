@@ -1,6 +1,7 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.Windows;
+using TaskTracker.ViewModel;
 
 namespace TaskTracker
 {

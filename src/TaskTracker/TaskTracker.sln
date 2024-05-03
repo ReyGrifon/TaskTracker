@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskTracker.View", "TaskTracker\TaskTracker.View.csproj", "{D52DD7F6-A531-4012-BEE9-EF4F27D5C64F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskTracker.Model", "TaskTracker.Model\TaskTracker.Model.csproj", "{84191888-463E-4CF1-AC54-F5867F46EEE6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskTracker.ViewModel", "TaskTracker.ViewModel\TaskTracker.ViewModel.csproj", "{5DE777CB-4904-437F-A4A2-4934C45FEFB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskTracker", "TaskTracker\TaskTracker.csproj", "{D52DD7F6-A531-4012-BEE9-EF4F27D5C64F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +15,6 @@ Global
 		{D52DD7F6-A531-4012-BEE9-EF4F27D5C64F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D52DD7F6-A531-4012-BEE9-EF4F27D5C64F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D52DD7F6-A531-4012-BEE9-EF4F27D5C64F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{84191888-463E-4CF1-AC54-F5867F46EEE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{84191888-463E-4CF1-AC54-F5867F46EEE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{84191888-463E-4CF1-AC54-F5867F46EEE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{84191888-463E-4CF1-AC54-F5867F46EEE6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5DE777CB-4904-437F-A4A2-4934C45FEFB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5DE777CB-4904-437F-A4A2-4934C45FEFB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5DE777CB-4904-437F-A4A2-4934C45FEFB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5DE777CB-4904-437F-A4A2-4934C45FEFB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

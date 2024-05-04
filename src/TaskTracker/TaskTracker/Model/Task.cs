@@ -9,7 +9,7 @@ namespace TaskTracker.Model
         private TaskStatus _status;
         private string _description;
         private DateTime _dateStartTask = DateTime.Now;
-        private DateTime _dateEndTask;
+        private DateTime _dateEndTask = DateTime.Now;
         public TaskStatus Status
         {
             get => _status;
@@ -30,7 +30,6 @@ namespace TaskTracker.Model
                     return;
                 }
                 _name = value;
-                OnPropertyChanged("Name");
             }
         }
         public string Description
@@ -39,7 +38,6 @@ namespace TaskTracker.Model
             set
             {
                 _description = value;
-                OnPropertyChanged("Description");
             }
         }
         public DateTime DateStartTask
@@ -54,7 +52,7 @@ namespace TaskTracker.Model
                     return;
                 }
                 _dateStartTask = value;
-                OnPropertyChanged("DateStartTask");
+                OnPropertyChanged(nameof(DateStartTask));
             }
         }
         public DateTime DateEndTask
@@ -73,6 +71,14 @@ namespace TaskTracker.Model
             Status = status;
             DateStartTask = (DateTime)startDate;
         }
+        public Task(string name, string description, TaskStatus status, DateTime startDate, DateTime endTime)
+        {
+            Name = name;
+            Description = description;
+            Status = status;
+            DateStartTask = startDate;
+            DateEndTask = endTime;
+        }
         public Task(string name, string description, TaskStatus status)
         {
             Name = name;
@@ -86,12 +92,17 @@ namespace TaskTracker.Model
             Status = status;
             DateStartTask = DateTime.Now;
         }
+        public Task(TaskStatus status)
+        {
+            Status = status;
+        }
         public Task(Task value)
         {
-            this.Name = value.Name;
-            this._description = value.Description;
-            this.Status = value.Status;
-            this.DateStartTask = value.DateStartTask;
+            Name = value.Name;
+            Description = value.Description;
+            Status = value.Status;
+            DateStartTask = value.DateStartTask;
+            DateEndTask= value.DateEndTask;
         }
         public Task()
         {

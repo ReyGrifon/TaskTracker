@@ -24,28 +24,28 @@ namespace TaskTracker.ViewModel
                 OnPropertyChanged("selectedTask");
             }
         }
-        private bool _isAddOrEditTask = false;
-        public bool IsAddOrEditTask
+        private bool _isEditTask = false;
+        public bool IsEditTask
         {
-            get { return _isAddOrEditTask; }
+            get { return _isEditTask; }
             set
             {
-                if (_isAddOrEditTask != value)
+                if (_isEditTask != value)
                 {
-                    _isAddOrEditTask = value;
+                    _isEditTask = value;
                     OnPropertyChanged();
                 }
             }
         }
-        private bool _isAddingTask = false;
-        public bool IsAddingTask
+        private bool _isAddTask = false;
+        public bool IsAddTask
         {
-            get { return _isAddingTask; }
+            get { return _isAddTask; }
             set
             {
-                if (_isAddingTask != value)
+                if (_isAddTask != value)
                 {
-                    _isAddingTask = value;
+                    _isAddTask = value;
                     OnPropertyChanged();
                 }
             }
@@ -62,7 +62,7 @@ namespace TaskTracker.ViewModel
                   SelectedTask = new();
                   Enum.TryParse((string?)obj, out TaskStatus status);
                   SelectedTask.Status = status;
-                  IsAddingTask = true;
+                  IsAddTask = true;
               }));
             }
         }
@@ -74,9 +74,9 @@ namespace TaskTracker.ViewModel
                 return _confirmAddTaskCommand ??
               (_confirmAddTaskCommand = new RelayCommand(obj =>
               {
-                  Task task = new Task(SelectedTask.Name, SelectedTask.Description, SelectedTask.Status, SelectedTask.DateStartTask);
+                  Task task = new Task(SelectedTask);
                   Tasks.Insert(0, task);
-                  IsAddingTask = false;
+                  IsAddTask = false;
                   SetTasks();
                   JsonFileService.SaveProject(Tasks.ToList());
               }));
@@ -93,7 +93,7 @@ namespace TaskTracker.ViewModel
                   Tasks.Remove(SelectedTask);
                   Task task = SelectedTask;
                   Tasks.Insert(0, task);
-                  IsAddingTask = false;
+                  IsEditTask = false;
                   SetTasks();
                   JsonFileService.SaveProject(Tasks.ToList());
               }));
@@ -114,7 +114,8 @@ namespace TaskTracker.ViewModel
                       SelectedTask.Status = _tempTask.Status;
                       SelectedTask.DateStartTask = _tempTask.DateStartTask;
                   }
-                  IsAddingTask = false;
+                  IsAddTask = false;
+                  IsEditTask = false;
               }));
             }
         }
@@ -128,7 +129,7 @@ namespace TaskTracker.ViewModel
                     {
                         SelectedTask = obj as Task;
                         _tempTask = SelectedTask.Clone();
-                        IsAddingTask = true;
+                        IsEditTask = true;
                         OnPropertyChanged("SelectedTask");
                     }));
             }
@@ -154,22 +155,10 @@ namespace TaskTracker.ViewModel
         }
         public ObservableCollection<Task> ToDoTasks { get; set; }
         public ObservableCollection<Task> Tasks { get; set; }
-
-        private ObservableCollection<Task> _inProgressTasks;
+        public ObservableCollection<Task> InProgressTasks { get; set; }
         public ObservableCollection<Task> DoneTasks { get; set; }
-
-        public ObservableCollection<Task> InProgressTasks
-        {
-            get { return _inProgressTasks; }
-            set
-            {
-                _inProgressTasks = value;
-                OnPropertyChanged(nameof(Tasks));
-            }
-        }
         public MainViewModel()
         {
-            // Инициализация коллекций задач
             SelectedTask = new Task();
             Tasks = new ObservableCollection<Task>(JsonFileService.LoadProject());
             ToDoTasks = new ObservableCollection<Task>();

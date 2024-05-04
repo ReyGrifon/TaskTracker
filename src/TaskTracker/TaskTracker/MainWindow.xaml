@@ -9,13 +9,14 @@
         Title="TaskTracker" Height="450" Width="800">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="VisibilityConverter"/>
-        <vm:TasksConverter x:Key="taskConvert"/>
         <vm:AddOrEditConvertor x:Key="AddOrEditConverter"/>
     </Window.Resources>
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
     <Grid>
+        <ScrollViewer>
+        <Grid Margin="5 0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
@@ -40,11 +41,27 @@
                     <ItemsControl ItemsSource="{Binding ToDoTasks}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <WrapPanel>
-                                    <TextBlock Text="{Binding Name}" Margin="3"/>
-                                    <Button Content="Edit" Command="{Binding DataContext.EditTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3"/>
-                                    <Button Content="Delete" Command="{Binding DataContext.DeleteTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3"/>
-                                </WrapPanel>
+                                <Border Margin="5">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="LightGray"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="13" Margin="3"/>
+                                        <Button Grid.Column="1" Content="Edit" Command="{Binding DataContext.EditTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3"/>
+                                        <Button Grid.Column="2" Content="Delete" Command="{Binding DataContext.DeleteTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3"/>
+                                    </Grid>
+                                </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -69,11 +86,16 @@
                                             </Style.Triggers>
                                         </Style>
                                     </Border.Style>
-                                    <WrapPanel>
-                                        <TextBlock Text="{Binding Name}" Margin="3"/>
-                                        <Button Content="Edit" Command="{Binding DataContext.EditTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3"/>
-                                        <Button Content="Delete" Command="{Binding DataContext.DeleteTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3"/>
-                                    </WrapPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="13" Margin="3"/>
+                                        <Button Grid.Column="1" Content="Edit" Command="{Binding DataContext.EditTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3"/>
+                                        <Button Grid.Column="2" Content="Delete" Command="{Binding DataContext.DeleteTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3"/>
+                                    </Grid>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -86,14 +108,30 @@
             <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1" Margin="1">
                 <StackPanel x:Name="DoneTasks">
                     <TextBlock Text="Done" FontWeight="Bold" Margin="5" />
-                    <ItemsControl x:Name="Done" ItemsSource="{Binding DoneTasks}">
+                    <ItemsControl ItemsSource="{Binding DoneTasks}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <WrapPanel>
-                                    <TextBlock Text="{Binding Name}" Margin="3"/>
-                                    <Button Content="Edit" Command="{Binding DataContext.EditTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3"/>
-                                    <Button Content="Delete" Command="{Binding DataContext.DeleteTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3"/>
-                                </WrapPanel>
+                                <Border Margin="5">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="LightGray"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="13" Margin="3"/>
+                                        <Button Grid.Column="1" Content="Edit" Command="{Binding DataContext.EditTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3"/>
+                                        <Button Grid.Column="2" Content="Delete" Command="{Binding DataContext.DeleteTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3"/>
+                                    </Grid>
+                                </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -103,18 +141,68 @@
 
         </Grid>
         <!-- Панель добавления новой задачи -->
-        <Border x:Name="qwe" Grid.RowSpan="2" Grid.ColumnSpan="3" Background="#AA000000" Visibility="{Binding IsAddingTask, Converter={StaticResource VisibilityConverter}}">
+        <Border x:Name="AddTask" Grid.RowSpan="2" Grid.ColumnSpan="3" Background="#AA000000" Visibility="{Binding IsAddTask, Converter={StaticResource VisibilityConverter}}">
             <ItemsControl ItemsSource="{Binding SelectedTask}">
-                <StackPanel Margin="30" Background="White" Width="400">
+                <StackPanel Margin="30" Background="White" Width="300">
                     <TextBlock Text="New Task" FontWeight="Bold" Margin="5" />
+                    <TextBlock Text="Name task" Margin="5 0"/>
                     <TextBox Text="{Binding SelectedTask.Name}" Margin="5" />
-                    <DatePicker SelectedDate="{Binding SelectedTask.DateStartTask}" />
-                    <TextBox Text="{Binding SelectedTask.Description}" Margin="5" />
-                    <ComboBox ItemsSource="{Binding StatusList}" SelectedItem="{Binding SelectedTask.Status}"/>
-                    <Button Content="Save" Command="{Binding IsAddOrEditTask, Converter={StaticResource AddOrEditConverter}}" Margin="5" />
+                    <Grid Margin=" 20 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="Date of Start"/>
+                        <DatePicker Grid.Column="1" SelectedDate="{Binding SelectedTask.DateStartTask}" />
+                        <TextBlock Grid.Row="1" Text="Date of end"/>
+                        <DatePicker Grid.Row="1" Grid.Column="1" SelectedDate="{Binding SelectedTask.DateEndTask}" />
+                        <TextBlock Grid.Row="2" Text="Status"/>
+                        <ComboBox Grid.Row="2" Grid.Column="2" ItemsSource="{Binding StatusList}" SelectedItem="{Binding SelectedTask.Status}"/>
+                    </Grid>
+                    <TextBlock Text="Description" Margin="5 0"/>
+                    <TextBox Text="{Binding SelectedTask.Description}" Margin="5" TextWrapping="Wrap"/>
+                    <Button Content="Save" Command="{Binding ConfirmAddTaskCommand}" Margin="5"/>
                     <Button Content="Cancel" Command="{Binding CancelAddTaskCommand}" Margin="5" />
                 </StackPanel>
             </ItemsControl>
         </Border>
+        <!-- Панель редактирования задачи -->
+        <Border x:Name="EditTask" Grid.RowSpan="2" Grid.ColumnSpan="3" Background="#AA000000" Visibility="{Binding IsEditTask, Converter={StaticResource VisibilityConverter}}">
+            <ItemsControl ItemsSource="{Binding SelectedTask}">
+                <StackPanel Margin="30" Background="White" Width="300">
+                    <TextBlock Text="Edit Task" FontWeight="Bold" Margin="5" />
+                    <TextBlock Text="Name task" Margin="5 0"/>
+                    <TextBox Text="{Binding SelectedTask.Name}" Margin="5" />
+                    <Grid Margin=" 20 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="Date of Start"/>
+                        <DatePicker Grid.Column="1" SelectedDate="{Binding SelectedTask.DateStartTask}" />
+                        <TextBlock Grid.Row="1" Text="Date of end"/>
+                        <DatePicker Grid.Row="1" Grid.Column="1" SelectedDate="{Binding SelectedTask.DateEndTask}" />
+                        <TextBlock Grid.Row="2" Text="Status"/>
+                        <ComboBox Grid.Row="2" Grid.Column="2" ItemsSource="{Binding StatusList}" SelectedItem="{Binding SelectedTask.Status}"/>
+                    </Grid>
+                    <TextBlock Text="Description" Margin="5 0"/>
+                    <TextBox Text="{Binding SelectedTask.Description}" Margin="5" TextWrapping="Wrap"/>
+                    <Button Content="Save" Command="{Binding ConfirmEditTaskCommand}" Margin="5"/>
+                    <Button Content="Cancel" Command="{Binding CancelAddTaskCommand}" Margin="5" />
+                </StackPanel>
+            </ItemsControl>
+        </Border>
+    </Grid>
+        </ScrollViewer>
     </Grid>
 </Window>

@@ -10,16 +10,18 @@ using TaskTracker.View.ViewModel;
 
 namespace TaskTracker.ViewModel
 {
-    public class AddOrEditConvertor : IValueConverter
+    public class AddOrEditConvertor : IMultiValueConverter
     {
         private readonly MainViewModel viewModel = new();
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var IsAddOrEditTask = (bool)value;
-            return IsAddOrEditTask ? viewModel.ConfirmAddTaskCommand : viewModel.ConfirmEditTaskCommand;
+            if (values.Length < 2 || !(values[0] is RelayCommand command) || !(values[1] is bool isAddingTask))
+                return null;
+
+            return isAddingTask ? viewModel.ConfirmAddTaskCommand : viewModel.ConfirmEditTaskCommand;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

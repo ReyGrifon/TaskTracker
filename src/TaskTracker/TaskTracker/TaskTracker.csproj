@@ -9,11 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="View\icons\delete-48.png" />
+    <None Remove="View\icons\edit-48.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="View\" />
+    <Resource Include="View\icons\delete-48.png" />
+    <Resource Include="View\icons\edit-48.png" />
   </ItemGroup>
 
 </Project>

@@ -64,13 +64,6 @@ namespace TaskTracker.Model
                 OnPropertyChanged("DateEndTask");
             }
         }
-        public Task(string name, string description, TaskStatus status, DateTime? startDate)
-        {
-            Name = name;
-            Description = description;
-            Status = status;
-            DateStartTask = (DateTime)startDate;
-        }
         public Task(string name, string description, TaskStatus status, DateTime startDate, DateTime endTime)
         {
             Name = name;
@@ -78,23 +71,6 @@ namespace TaskTracker.Model
             Status = status;
             DateStartTask = startDate;
             DateEndTask = endTime;
-        }
-        public Task(string name, string description, TaskStatus status)
-        {
-            Name = name;
-            Description = description;
-            DateStartTask = DateTime.Now;
-            Status = status;
-        }
-        public Task(string name, TaskStatus status) 
-        {
-            Name = name;
-            Status = status;
-            DateStartTask = DateTime.Now;
-        }
-        public Task(TaskStatus status)
-        {
-            Status = status;
         }
         public Task(Task value)
         {
@@ -113,16 +89,6 @@ namespace TaskTracker.Model
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
-        public Task Clone()
-        {
-            return new Task
-            {
-                Name = this.Name,
-                Description = this.Description,
-                Status = this.Status,
-                DateStartTask = this.DateStartTask
-            };
         }
     }
 }

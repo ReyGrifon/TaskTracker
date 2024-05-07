@@ -128,7 +128,7 @@ namespace TaskTracker.ViewModel
                     (_editTaskCommand = new RelayCommand(obj =>
                     {
                         SelectedTask = obj as Task;
-                        _tempTask = SelectedTask.Clone();
+                        _tempTask = new(SelectedTask);
                         IsEditTask = true;
                         OnPropertyChanged("SelectedTask");
                     }));
@@ -195,6 +195,42 @@ namespace TaskTracker.ViewModel
                             ToDoTasks.Insert(0, task);
                             break;
                         }
+                }
+            }
+        }
+        public void MoveTask(Task task, TaskStatus newStatus)
+        {
+            if (task.Status != newStatus)
+            {
+                // Удаление задачи из текущего столбца
+                switch (task.Status)
+                {
+                    case TaskStatus.ToDo:
+                        ToDoTasks.Remove(task);
+                        break;
+                    case TaskStatus.InProgress:
+                        InProgressTasks.Remove(task);
+                        break;
+                    case TaskStatus.Done:
+                        DoneTasks.Remove(task);
+                        break;
+                }
+
+                // Обновление статуса задачи
+                task.Status = newStatus;
+
+                // Добавление задачи в новый столбец
+                switch (newStatus)
+                {
+                    case TaskStatus.ToDo:
+                        ToDoTasks.Add(task);
+                        break;
+                    case TaskStatus.InProgress:
+                        InProgressTasks.Add(task);
+                        break;
+                    case TaskStatus.Done:
+                        DoneTasks.Add(task);
+                        break;
                 }
             }
         }

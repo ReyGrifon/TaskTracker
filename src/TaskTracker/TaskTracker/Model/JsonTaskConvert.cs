@@ -5,7 +5,7 @@ using System.IO;
 
 namespace TaskTracker.Model
 {
-    public static class JsonFileService
+    public static class JsonTaskConvert
     {
         private static string _appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         private static string _path = $"{_appDataPath}\\TaskTracker";
@@ -39,7 +39,6 @@ namespace TaskTracker.Model
             }
             File.WriteAllText(_filePath, JsonConvert.SerializeObject(project));
         }
-
         /// <summary>
         /// Загружает данные из пути _folderPath.
         /// </summary>

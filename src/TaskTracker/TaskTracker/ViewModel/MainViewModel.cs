@@ -1,17 +1,40 @@
-﻿using System;
+﻿using GongSolutions.Wpf.DragDrop;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using TaskTracker.Model;
 using Task = TaskTracker.Model.Task;
 using TaskStatus = TaskTracker.Model.TaskStatus;
 
 namespace TaskTracker.ViewModel
 {
-    public class MainViewModel : INotifyPropertyChanged
+    public class MainViewModel : INotifyPropertyChanged, IDropTarget
     {
         public List<TaskStatus> StatusList { get; } = Enum.GetValues(typeof(TaskStatus)).Cast<TaskStatus>().ToList();
+
+        public void DragOver(IDropInfo dropInfo)
+        {
+            if (dropInfo.TargetCollection is ObservableCollection<Task> tasks)
+            {
+                if (dropInfo.Data is Task task)
+                {
+                    dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+                    dropInfo.Effects = DragDropEffects.Move;
+                }
+            }
+        }
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            var clas = dropInfo.Data as Task;
+            Task targetItem = dropInfo.TargetItem as Task;
+            clas.Status = targetItem.Status;
+            SetTasks();
+            JsonTaskConvert.SaveProject(Tasks.ToList());
+        }
 
         private Task _selectedTask;
         private Task _tempTask;
@@ -78,7 +101,7 @@ namespace TaskTracker.ViewModel
                   Tasks.Insert(0, task);
                   IsAddTask = false;
                   SetTasks();
-                  JsonFileService.SaveProject(Tasks.ToList());
+                  JsonTaskConvert.SaveProject(Tasks.ToList());
               }));
             }
         }
@@ -95,7 +118,7 @@ namespace TaskTracker.ViewModel
                   Tasks.Insert(0, task);
                   IsEditTask = false;
                   SetTasks();
-                  JsonFileService.SaveProject(Tasks.ToList());
+                  JsonTaskConvert.SaveProject(Tasks.ToList());
               }));
             }
         }
@@ -147,7 +170,7 @@ namespace TaskTracker.ViewModel
                  {
                      Tasks.Remove(phone);
                      SetTasks();
-                     JsonFileService.SaveProject(Tasks.ToList());
+                     JsonTaskConvert.SaveProject(Tasks.ToList());
                  }
              }))
              ;
@@ -160,7 +183,7 @@ namespace TaskTracker.ViewModel
         public MainViewModel()
         {
             SelectedTask = new Task();
-            Tasks = new ObservableCollection<Task>(JsonFileService.LoadProject());
+            Tasks = new ObservableCollection<Task>(JsonTaskConvert.LoadProject());
             ToDoTasks = new ObservableCollection<Task>();
             InProgressTasks = new ObservableCollection<Task>();
             DoneTasks = new ObservableCollection<Task>();

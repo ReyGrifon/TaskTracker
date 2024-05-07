@@ -221,42 +221,6 @@ namespace TaskTracker.ViewModel
                 }
             }
         }
-        public void MoveTask(Task task, TaskStatus newStatus)
-        {
-            if (task.Status != newStatus)
-            {
-                // Удаление задачи из текущего столбца
-                switch (task.Status)
-                {
-                    case TaskStatus.ToDo:
-                        ToDoTasks.Remove(task);
-                        break;
-                    case TaskStatus.InProgress:
-                        InProgressTasks.Remove(task);
-                        break;
-                    case TaskStatus.Done:
-                        DoneTasks.Remove(task);
-                        break;
-                }
-
-                // Обновление статуса задачи
-                task.Status = newStatus;
-
-                // Добавление задачи в новый столбец
-                switch (newStatus)
-                {
-                    case TaskStatus.ToDo:
-                        ToDoTasks.Add(task);
-                        break;
-                    case TaskStatus.InProgress:
-                        InProgressTasks.Add(task);
-                        break;
-                    case TaskStatus.Done:
-                        DoneTasks.Add(task);
-                        break;
-                }
-            }
-        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

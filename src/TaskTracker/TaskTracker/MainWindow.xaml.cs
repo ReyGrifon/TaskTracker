@@ -41,25 +41,7 @@ namespace TaskTracker
                 e.Effects = DragDropEffects.None;
             e.Handled = true;
         }
-
-        private void Border_Drop(object sender, DragEventArgs e)
-        {
-            var name = ((Grid)sender).ColumnDefinitions;
-            Point dropPosition = e.GetPosition(this);
-            foreach (var border in FindVisualChildren<Border>(this))
-            {
-                        var droppedTask = e.Data.GetData("task") as Task; // Замените "Task" на ваш тип данных задачи
-                                                                          // Определите, в каком столбце находится место, куда была брошена задача
-                        var dropTarget = (Border)sender;
-                        if (dropTarget.Name == "ToDoTasks")
-                            viewModel.MoveTask(droppedTask, TaskStatus.ToDo);
-                        else if (dropTarget.Name == "InProcessTasks")
-                            viewModel.MoveTask(droppedTask, TaskStatus.InProgress);
-                        else if (dropTarget.Name == "DoneTasks")
-                            viewModel.MoveTask(droppedTask, TaskStatus.Done);
-                    }
-                    e.Handled = true;
-        }
+  
         private bool isDragging = false;
         private Point startPoint;
 

@@ -10,7 +10,6 @@
         Title="TaskTracker" Height="450" Width="800">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="VisibilityConverter"/>
-        <vm:TasksConverter x:Key="TasksConverter"/>
     </Window.Resources>
     <Window.DataContext>
         <vm:MainViewModel/>

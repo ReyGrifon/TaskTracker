@@ -10,6 +10,7 @@ namespace TaskTracker.Model
         private string _description;
         private DateTime _dateStartTask = DateTime.Now;
         private DateTime _dateEndTask = DateTime.Now;
+        private Dictionary<string, bool> TasksCheckBoxes = new Dictionary<string, bool>();
         public TaskStatus Status
         {
             get => _status;

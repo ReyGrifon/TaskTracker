@@ -1,0 +1,241 @@
+﻿<UserControl x:Class="TaskTracker.View.TasksView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TaskTracker.View"
+             xmlns:dd="urn:gong-wpf-dragdrop"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="VisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid AllowDrop="True">
+        <ScrollViewer>
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+
+                <!-- Поисковая строка -->
+                <TextBox Grid.Row="0" x:Name="searchTextBox" Margin="5" />
+
+                <!-- Столбцы для задач -->
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Столбец "To do" -->
+                    <Border BorderBrush="Black" BorderThickness="1" Margin="1">
+                        <StackPanel x:Name="ToDoTasks">
+                            <TextBlock Text="To do" FontWeight="Bold" Margin="5" />
+                            <ItemsControl x:Name="ListDoTasks"
+                                      ItemsSource="{Binding ToDoTasks}" 
+                                      dd:DragDrop.IsDragSource="True"
+                                      dd:DragDrop.IsDropTarget="True"
+                                      dd:DragDrop.DropHandler="{Binding}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="5">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="LightGray"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition/>
+                                                    <RowDefinition/>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Name}" TextTrimming="CharacterEllipsis" FontSize="13" Margin="3"/>
+                                                <Button Grid.Column="1" Command="{Binding DataContext.EditTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3">
+                                                    <Image Source="icons/edit-48.png" Width="15"/>
+                                                </Button>
+                                                <Button Grid.Column="2" Command="{Binding DataContext.DeleteTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3">
+                                                    <Image Source="icons/delete-48.png" Width="15"/>
+                                                </Button>
+                                                <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding Description}" TextTrimming="CharacterEllipsis"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Button Content="Add Task" Command="{Binding AddTaskCommand}" CommandParameter="ToDo" Margin="5" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Столбец "In process" -->
+                    <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1" Margin="1">
+                        <StackPanel x:Name="InProessTasks">
+                            <TextBlock Text="In progress" FontWeight="Bold" Margin="5" />
+                            <ItemsControl x:Name="ListInProgressTasks" ItemsSource="{Binding InProgressTasks}"
+                                dd:DragDrop.IsDragSource="True"
+                                dd:DragDrop.IsDropTarget="True"
+                                dd:DragDrop.DropHandler="{Binding}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="5">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="LightGray"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition/>
+                                                    <RowDefinition/>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Name}" TextTrimming="CharacterEllipsis" FontSize="13" Margin="3"/>
+                                                <Button Grid.Column="1" Command="{Binding DataContext.EditTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3">
+                                                    <Image Source="icons/edit-48.png" Width="15"/>
+                                                </Button>
+                                                <Button Grid.Column="2" Command="{Binding DataContext.DeleteTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3">
+                                                    <Image Source="icons/delete-48.png" Width="15"/>
+                                                </Button>
+                                                <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding Description}" TextTrimming="CharacterEllipsis"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Button Content="Add Task" Command="{Binding AddTaskCommand}" CommandParameter="InProgress" Margin="5" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Столбец "Done" -->
+                    <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1" Margin="1">
+                        <StackPanel x:Name="DoneTasks">
+                            <TextBlock Text="Done" FontWeight="Bold" Margin="5" />
+                            <ItemsControl x:Name="ListDoneTasks" ItemsSource="{Binding DoneTasks}" 
+                                                    dd:DragDrop.IsDragSource="True"
+                                                    dd:DragDrop.IsDropTarget="True"
+                                                    dd:DragDrop.DropHandler="{Binding}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="5">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="LightGray"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition/>
+                                                    <RowDefinition/>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Name}" TextTrimming="CharacterEllipsis" FontSize="13" Margin="3"/>
+                                                <Button Grid.Column="1" Command="{Binding DataContext.EditTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3">
+                                                    <Image Source="icons/edit-48.png" Width="15"/>
+                                                </Button>
+                                                <Button Grid.Column="2" Command="{Binding DataContext.DeleteTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" Margin="3">
+                                                    <Image Source="icons/delete-48.png" Width="15"/>
+                                                </Button>
+                                                <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding Description}" TextTrimming="CharacterEllipsis"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Button Content="Add Task" Command="{Binding AddTaskCommand}" CommandParameter="Done" Margin="5" />
+                        </StackPanel>
+                    </Border>
+
+                </Grid>
+                <!-- Панель добавления новой задачи -->
+                <Border x:Name="AddTask" Grid.RowSpan="2" Grid.ColumnSpan="3" Background="#AA000000" Visibility="{Binding IsAddTask, Converter={StaticResource VisibilityConverter}}">
+                    <ItemsControl ItemsSource="{Binding SelectedTask}">
+                        <StackPanel Margin="30" Background="White" Width="300">
+                            <TextBlock Text="New Task" FontWeight="Bold" Margin="5" />
+                            <TextBlock Text="Name task" Margin="5 0"/>
+                            <TextBox Text="{Binding SelectedTask.Name}" Margin="5" TextWrapping="Wrap" MaxLength="50"/>
+                            <Grid Margin=" 20 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="Date of Start"/>
+                                <DatePicker Grid.Column="1" SelectedDate="{Binding SelectedTask.DateStartTask}" />
+                                <TextBlock Grid.Row="1" Text="Date of end"/>
+                                <DatePicker Grid.Row="1" Grid.Column="1" SelectedDate="{Binding SelectedTask.DateEndTask}" />
+                                <TextBlock Grid.Row="2" Text="Status"/>
+                                <ComboBox Grid.Row="2" Grid.Column="2" ItemsSource="{Binding StatusList}" SelectedItem="{Binding SelectedTask.Status}"/>
+                            </Grid>
+                            <TextBlock Text="Description" Margin="5 0"/>
+                            <TextBox Text="{Binding SelectedTask.Description}" Margin="5" TextWrapping="Wrap" MaxLength="150"/>
+                            <Button Content="Save" Command="{Binding ConfirmAddTaskCommand}" Margin="5"/>
+                            <Button Content="Cancel" Command="{Binding CancelAddTaskCommand}" Margin="5" />
+                        </StackPanel>
+                    </ItemsControl>
+                </Border>
+                <!-- Панель редактирования задачи -->
+                <Border x:Name="EditTask" Grid.RowSpan="2" Grid.ColumnSpan="3" Background="#AA000000" Visibility="{Binding IsEditTask, Converter={StaticResource VisibilityConverter}}">
+                    <ItemsControl ItemsSource="{Binding SelectedTask}">
+                        <StackPanel Margin="30" Background="White" Width="300">
+                            <TextBlock Text="Edit Task" FontWeight="Bold" Margin="5" />
+                            <TextBlock Text="Name task" Margin="5 0"/>
+                            <TextBox Text="{Binding SelectedTask.Name}" Margin="5" TextWrapping="Wrap" MaxLength="50"/>
+                            <Grid Margin=" 20 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="Date of Start"/>
+                                <DatePicker Grid.Column="1" SelectedDate="{Binding SelectedTask.DateStartTask}" />
+                                <TextBlock Grid.Row="1" Text="Date of end"/>
+                                <DatePicker Grid.Row="1" Grid.Column="1" SelectedDate="{Binding SelectedTask.DateEndTask}" />
+                                <TextBlock Grid.Row="2" Text="Status"/>
+                                <ComboBox Grid.Row="2" Grid.Column="2" ItemsSource="{Binding StatusList}" SelectedItem="{Binding SelectedTask.Status}"/>
+                            </Grid>
+                            <TextBlock Text="Description" Margin="5 0"/>
+                            <TextBox Text="{Binding SelectedTask.Description}" Margin="5" TextWrapping="Wrap" MaxLength="150"/>
+                            <Button Content="Save" Command="{Binding ConfirmEditTaskCommand}" Margin="5"/>
+                            <Button Content="Cancel" Command="{Binding CancelAddTaskCommand}" Margin="5" />
+                        </StackPanel>
+                    </ItemsControl>
+                </Border>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

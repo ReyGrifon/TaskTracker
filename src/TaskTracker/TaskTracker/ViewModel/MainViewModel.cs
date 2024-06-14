@@ -1,9 +1,8 @@
 ﻿using GongSolutions.Wpf.DragDrop;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using TaskTracker.Model;
 using Task = TaskTracker.Model.Task;
@@ -13,7 +12,41 @@ namespace TaskTracker.ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged, IDropTarget
     {
+        private Task _selectedTask;
+        private Task _tempTask;
+        private RelayCommand _addTaskCommand;
+        private RelayCommand _editTaskCommand;
+        private RelayCommand _confirmAddTaskCommand;
+        private RelayCommand _cancelAddTaskCommand;
+        private RelayCommand _confirmEditTaskCommand;
+        private RelayCommand _deleteTaskCommand;
+        private bool _isAddTask = false;
+        private bool _isEditTask = false;
+        private TaskStatistic _statistic = new();
+        private ObservableCollection<Task> _tasks;
         public List<TaskStatus> StatusList { get; } = Enum.GetValues(typeof(TaskStatus)).Cast<TaskStatus>().ToList();
+        public ObservableCollection<Task> ToDoTasks { get; set; }
+        public ObservableCollection<Task> Tasks
+        {
+            get => _tasks;
+            set
+            {
+                _tasks = value;
+                OnPropertyChanged(nameof(Tasks));
+                UpdateStatistics();
+            }
+        }
+        public TaskStatistic Statistic
+        {
+            get => _statistic;
+            set
+            {
+                _statistic = value;
+                OnPropertyChanged(nameof(Statistic));
+            }
+        }
+        public ObservableCollection<Task> InProgressTasks { get; set; }
+        public ObservableCollection<Task> DoneTasks { get; set; }
 
         public void DragOver(IDropInfo dropInfo)
         {
@@ -26,18 +59,20 @@ namespace TaskTracker.ViewModel
                 }
             }
         }
-
+        private void UpdateStatistics()
+        {
+            _statistic.CalculateStatistics(_tasks);
+            OnPropertyChanged(nameof(_statistic));
+        }
         public void Drop(IDropInfo dropInfo)
         {
-            var clas = dropInfo.Data as Task;
+            var task = dropInfo.Data as Task;
             Task targetItem = dropInfo.TargetItem as Task;
-            clas.Status = targetItem.Status;
+            task.Status = targetItem.Status;
             SetTasks();
             JsonTaskConvert.SaveProject(Tasks.ToList());
         }
 
-        private Task _selectedTask;
-        private Task _tempTask;
         public Task SelectedTask
         {
             get { return _selectedTask; }
@@ -47,7 +82,7 @@ namespace TaskTracker.ViewModel
                 OnPropertyChanged("selectedTask");
             }
         }
-        private bool _isEditTask = false;
+
         public bool IsEditTask
         {
             get { return _isEditTask; }
@@ -60,7 +95,7 @@ namespace TaskTracker.ViewModel
                 }
             }
         }
-        private bool _isAddTask = false;
+
         public bool IsAddTask
         {
             get { return _isAddTask; }
@@ -74,7 +109,6 @@ namespace TaskTracker.ViewModel
             }
         }
 
-        private RelayCommand _addTaskCommand;
         public RelayCommand AddTaskCommand
         {
             get
@@ -89,7 +123,7 @@ namespace TaskTracker.ViewModel
               }));
             }
         }
-        private RelayCommand _confirmAddTaskCommand;
+
         public RelayCommand ConfirmAddTaskCommand
         {
             get
@@ -105,7 +139,7 @@ namespace TaskTracker.ViewModel
               }));
             }
         }
-        private RelayCommand _confirmEditTaskCommand;
+
         public RelayCommand ConfirmEditTaskCommand
         {
             get
@@ -122,7 +156,7 @@ namespace TaskTracker.ViewModel
               }));
             }
         }
-        private RelayCommand _cancelAddTaskCommand;
+
         public RelayCommand CancelAddTaskCommand
         {
             get
@@ -142,7 +176,7 @@ namespace TaskTracker.ViewModel
               }));
             }
         }
-        private RelayCommand _editTaskCommand;
+
         public RelayCommand EditTaskCommand
         {
             get
@@ -157,7 +191,7 @@ namespace TaskTracker.ViewModel
                     }));
             }
         }
-        private RelayCommand _deleteTaskCommand;
+
         public RelayCommand DeleteTaskCommand
         {
             get
@@ -176,10 +210,7 @@ namespace TaskTracker.ViewModel
              ;
             }
         }
-        public ObservableCollection<Task> ToDoTasks { get; set; }
-        public ObservableCollection<Task> Tasks { get; set; }
-        public ObservableCollection<Task> InProgressTasks { get; set; }
-        public ObservableCollection<Task> DoneTasks { get; set; }
+
         public MainViewModel()
         {
             SelectedTask = new Task();
@@ -189,12 +220,13 @@ namespace TaskTracker.ViewModel
             DoneTasks = new ObservableCollection<Task>();
             SetTasks();
         }
-        void SetTasks()
+
+        private void SetTasks()
         {
             ToDoTasks.Clear();
             InProgressTasks.Clear();
             DoneTasks.Clear();
-            foreach(var task in Tasks)
+            foreach (var task in Tasks)
             {
                 switch (task.Status)
                 {

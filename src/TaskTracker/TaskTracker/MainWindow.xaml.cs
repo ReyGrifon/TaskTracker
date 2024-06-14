@@ -5,9 +5,11 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TaskTracker.View;
 using TaskTracker.ViewModel;
 using Task = TaskTracker.Model.Task;
 using TaskStatus = TaskTracker.Model.TaskStatus;
@@ -19,11 +21,71 @@ namespace TaskTracker
     /// </summary>
     public partial class MainWindow : Window
     {
-        MainViewModel viewModel = new();
         public MainWindow()
         {
             InitializeComponent();
+            var taskView = new TasksView();
+            taskView.ButtonClicked += OnUserControlButtonClicked;
+            MainContent.Content = taskView;
         }
+        public void OnUserControlButtonClicked(object sender, RoutedEventArgs e)
+        {
+            CloseMenu();
+        }
+        private void BurgerButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (BurgerMenu.RenderTransform is TranslateTransform transform && transform.X == 0)
+            {
+                CloseMenu();
+            }
+            else
+            {
+                OpenMenu();
+            }
+        }
+
+        private void OpenMenu()
+        {
+            Overlay.Visibility = Visibility.Visible;
+            Overlay.IsHitTestVisible = true;
+            BurgerMenu.Visibility = Visibility.Visible;
+            Storyboard sb = FindResource("OpenMenu") as Storyboard;
+            sb.Begin();
+        }
+
+        private void CloseMenu()
+        {
+            Storyboard sb = FindResource("CloseMenu") as Storyboard;
+            sb.Completed += (s, e) =>
+            {
+                Overlay.Visibility = Visibility.Collapsed;
+                Overlay.IsHitTestVisible = false;
+                BurgerMenu.Visibility = Visibility.Collapsed;
+            };
+            sb.Begin();
+        }
+        private void Overlay_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            CloseMenu();
+        }
+        private void TasksButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new TasksView();
+            CloseMenu();
+        }
+
+        private void BranchesButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new BranchesView();
+            CloseMenu();
+        }
+
+        private void StatisticsButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new StatisticsView();
+            CloseMenu();
+        }
+
         private void Border_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent("task"))
@@ -40,29 +102,6 @@ namespace TaskTracker
             else
                 e.Effects = DragDropEffects.None;
             e.Handled = true;
-        }
-  
-        private bool isDragging = false;
-        private Point startPoint;
-
-        private void Border_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed && !isDragging)
-            {
-                startPoint = e.GetPosition(null);
-                isDragging = true;
-                DragDrop.DoDragDrop((sender as Border), (sender as Border).DataContext, DragDropEffects.Move);
-                isDragging = false;
-            }
-        }
-        private bool IsMouseOverBorder(Border border, Point dropPosition)
-        {
-            Point borderPosition = border.PointToScreen(new Point(0, 0));
-            double borderWidth = border.ActualWidth;
-            double borderHeight = border.ActualHeight;
-
-            return dropPosition.X >= borderPosition.X && dropPosition.X <= borderPosition.X + borderWidth &&
-                   dropPosition.Y >= borderPosition.Y && dropPosition.Y <= borderPosition.Y + borderHeight;
         }
 
         public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject

@@ -20,14 +20,15 @@ namespace TaskTracker.View
     /// </summary>
     public partial class TasksView : UserControl
     {
-        public event RoutedEventHandler ButtonClicked;
+        public event RoutedEventHandler BranchSelected;
         public TasksView()
         {
             InitializeComponent();
         }
-        private void Button_Click(object sender, RoutedEventArgs e)
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ButtonClicked?.Invoke(sender, e);
+            BranchSelected?.Invoke(sender, e);
         }
     }
 }

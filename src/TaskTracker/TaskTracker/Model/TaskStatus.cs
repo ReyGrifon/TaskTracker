@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TaskTracker.Model
+﻿namespace TaskTracker.Model
 {
+    /// <summary>
+    /// Статус выполнения задачи
+    /// </summary>
     public enum TaskStatus
     {
         ToDo,

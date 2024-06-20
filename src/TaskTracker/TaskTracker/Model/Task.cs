@@ -10,6 +10,7 @@ namespace TaskTracker.Model
         private string _description;
         private DateTime _dateStartTask = DateTime.Now;
         private DateTime _dateEndTask = DateTime.Now;
+        private DateTime _actualDateEndTask;
         private Dictionary<string, bool> TasksCheckBoxes = new Dictionary<string, bool>();
         public TaskStatus Status
         {
@@ -62,7 +63,16 @@ namespace TaskTracker.Model
             set
             {
                 _dateEndTask = value;
-                OnPropertyChanged("DateEndTask");
+                OnPropertyChanged(nameof(DateEndTask));
+            }
+        }
+        public DateTime ActualDateEndTask
+        {
+            get => _actualDateEndTask;
+            set
+            {
+                _actualDateEndTask = value;
+                OnPropertyChanged(nameof(ActualDateEndTask));
             }
         }
         public Task(string name, string description, TaskStatus status, DateTime startDate, DateTime endTime)

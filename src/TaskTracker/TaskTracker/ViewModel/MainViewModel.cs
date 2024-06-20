@@ -20,10 +20,12 @@ namespace TaskTracker.ViewModel
         private RelayCommand _cancelAddTaskCommand;
         private RelayCommand _confirmEditTaskCommand;
         private RelayCommand _deleteTaskCommand;
+        private string _searchText;
         private bool _isAddTask = false;
         private bool _isEditTask = false;
         private TaskStatistic _statistic = new();
         private ObservableCollection<Task> _tasks;
+        private ObservableCollection<TaskBranch> _taskBranches;
         public List<TaskStatus> StatusList { get; } = Enum.GetValues(typeof(TaskStatus)).Cast<TaskStatus>().ToList();
         public ObservableCollection<Task> ToDoTasks { get; set; }
         public ObservableCollection<Task> Tasks
@@ -33,6 +35,16 @@ namespace TaskTracker.ViewModel
             {
                 _tasks = value;
                 OnPropertyChanged(nameof(Tasks));
+                UpdateStatistics();
+            }
+        }
+        public ObservableCollection<TaskBranch> TaskBranches
+        {
+            get => _taskBranches;
+            set
+            {
+                _taskBranches = value;
+                OnPropertyChanged(nameof(TaskBranches));
                 UpdateStatistics();
             }
         }
@@ -48,29 +60,18 @@ namespace TaskTracker.ViewModel
         public ObservableCollection<Task> InProgressTasks { get; set; }
         public ObservableCollection<Task> DoneTasks { get; set; }
 
-        public void DragOver(IDropInfo dropInfo)
+        public string SearchText
         {
-            if (dropInfo.TargetCollection is ObservableCollection<Task> tasks)
+            get { return _searchText; }
+            set
             {
-                if (dropInfo.Data is Task task)
+                if (_searchText != value)
                 {
-                    dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
-                    dropInfo.Effects = DragDropEffects.Move;
+                    _searchText = value;
+                    OnPropertyChanged(nameof(SearchText));
+                    SetTasks();
                 }
             }
-        }
-        private void UpdateStatistics()
-        {
-            _statistic.CalculateStatistics(_tasks);
-            OnPropertyChanged(nameof(_statistic));
-        }
-        public void Drop(IDropInfo dropInfo)
-        {
-            var task = dropInfo.Data as Task;
-            Task targetItem = dropInfo.TargetItem as Task;
-            task.Status = targetItem.Status;
-            SetTasks();
-            JsonTaskConvert.SaveProject(Tasks.ToList());
         }
 
         public Task SelectedTask
@@ -107,6 +108,89 @@ namespace TaskTracker.ViewModel
                     OnPropertyChanged();
                 }
             }
+        }
+
+        /// <summary>
+        /// Метод, перемящийщий задачи в соответстсвующие по статусу листы
+        /// Если строка не пуста, то сначала фильтрует задачи по соответвию
+        /// введённого текста и названия задач.
+        /// </summary>
+        private void SetTasks()
+        {
+            ToDoTasks.Clear();
+            InProgressTasks.Clear();
+            DoneTasks.Clear();
+            var filteredTasks = string.IsNullOrEmpty(SearchText) ?
+                Tasks :
+                Tasks.Where(t => t.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+            foreach (var task in filteredTasks)
+            {
+                switch (task.Status)
+                {
+                    case TaskStatus.ToDo:
+                        {
+                            ToDoTasks.Insert(0, task);
+                            break;
+                        }
+                    case TaskStatus.InProgress:
+                        {
+                            InProgressTasks.Insert(0, task);
+                            break;
+                        }
+                    case TaskStatus.Done:
+                        {
+                            DoneTasks.Insert(0, task);
+                            break;
+                        }
+                    default:
+                        {
+                            ToDoTasks.Insert(0, task);
+                            break;
+                        }
+                }
+            }
+        }
+
+        /// <summary>
+        /// метод для перемещения задачи.
+        /// </summary>
+        /// <param name="dropInfo"></param>
+        public void DragOver(IDropInfo dropInfo)
+        {
+            if (dropInfo.TargetCollection is ObservableCollection<Task> tasks)
+            {
+                if (dropInfo.Data is Task task)
+                {
+                    dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+                    dropInfo.Effects = DragDropEffects.Move;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Метод, обновляющий статистику задач.
+        /// </summary>
+        private void UpdateStatistics()
+        {
+            _statistic.CalculateStatistics(_tasks);
+            OnPropertyChanged(nameof(_statistic));
+        }
+
+        /// <summary>
+        /// Метод, работающий после окончания метода DragOver.
+        /// </summary>
+        /// <param name="dropInfo"></param>
+        public void Drop(IDropInfo dropInfo)
+        {
+            var task = dropInfo.Data as Task;
+            Task targetItem = dropInfo.TargetItem as Task;
+            task.Status = targetItem.Status;
+            if (task.Status == TaskStatus.Done)
+            {
+                task.ActualDateEndTask = DateTime.Now;
+            }
+            SetTasks();
+            JsonTaskConvert.SaveProject(Tasks.ToList());
         }
 
         public RelayCommand AddTaskCommand
@@ -214,44 +298,12 @@ namespace TaskTracker.ViewModel
         public MainViewModel()
         {
             SelectedTask = new Task();
-            Tasks = new ObservableCollection<Task>(JsonTaskConvert.LoadProject());
+            Tasks = new ObservableCollection<Task>((List<Task>)JsonTaskConvert.LoadProject(typeof(Task)));
+            TaskBranches = new ObservableCollection<TaskBranch>((List<TaskBranch>)JsonTaskConvert.LoadProject(typeof(TaskBranch)));
             ToDoTasks = new ObservableCollection<Task>();
             InProgressTasks = new ObservableCollection<Task>();
             DoneTasks = new ObservableCollection<Task>();
             SetTasks();
-        }
-
-        private void SetTasks()
-        {
-            ToDoTasks.Clear();
-            InProgressTasks.Clear();
-            DoneTasks.Clear();
-            foreach (var task in Tasks)
-            {
-                switch (task.Status)
-                {
-                    case TaskStatus.ToDo:
-                        {
-                            ToDoTasks.Insert(0, task);
-                            break;
-                        }
-                    case TaskStatus.InProgress:
-                        {
-                            InProgressTasks.Insert(0, task);
-                            break;
-                        }
-                    case TaskStatus.Done:
-                        {
-                            DoneTasks.Insert(0, task);
-                            break;
-                        }
-                    default:
-                        {
-                            ToDoTasks.Insert(0, task);
-                            break;
-                        }
-                }
-            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -9,6 +9,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TaskTracker.Model;
 using TaskTracker.View;
 using TaskTracker.ViewModel;
 using Task = TaskTracker.Model.Task;
@@ -25,12 +26,12 @@ namespace TaskTracker
         {
             InitializeComponent();
             var taskView = new TasksView();
-            taskView.ButtonClicked += OnUserControlButtonClicked;
+            taskView.BranchSelected += OnUserControlButtonClicked;
             MainContent.Content = taskView;
         }
         public void OnUserControlButtonClicked(object sender, RoutedEventArgs e)
         {
-            CloseMenu();
+
         }
         private void BurgerButton_Click(object sender, RoutedEventArgs e)
         {

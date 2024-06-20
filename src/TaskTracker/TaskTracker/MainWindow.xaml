@@ -23,21 +23,31 @@
         <vm:MainViewModel/>
     </Window.DataContext>
     <Grid>
-        <ContentControl x:Name="MainContent" Grid.Column="0" Grid.Row="0"/>
+        <!-- Верхняя строка для кнопки бургер-меню -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
 
-        <Grid x:Name="Overlay" Background="#80000000" Visibility="Collapsed" IsHitTestVisible="False" MouseDown="Overlay_MouseDown"/>
+        <!-- Кнопка бургер-меню -->
+        <Button Content="☰" Width="30" Height="30" Margin="10" Click="BurgerButton_Click" VerticalAlignment="Top" HorizontalAlignment="Left"/>
 
-        <Grid x:Name="BurgerMenu" Width="200" Background="LightGray" VerticalAlignment="Stretch" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" Visibility="Collapsed">
-            <Grid.RenderTransform>
-                <TranslateTransform X="-200"/>
-            </Grid.RenderTransform>
-            <StackPanel>
-                <Button Content="Tasks" Click="TasksButton_Click" Margin="10"/>
-                <Button Content="Branches" Click="BranchesButton_Click" Margin="10"/>
-                <Button Content="Statistics" Click="StatisticsButton_Click" Margin="10"/>
-            </StackPanel>
+        <!-- Основное содержимое -->
+        <Grid Grid.Row="1">
+            <ContentControl x:Name="MainContent" Grid.Row="1" Grid.Column="0"/>
+
+            <Grid x:Name="Overlay" Background="#80000000" Visibility="Collapsed" IsHitTestVisible="False" MouseDown="Overlay_MouseDown"/>
+
+            <Grid x:Name="BurgerMenu" Width="200" Background="LightGray" VerticalAlignment="Stretch" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" Visibility="Collapsed">
+                <Grid.RenderTransform>
+                    <TranslateTransform X="-200"/>
+                </Grid.RenderTransform>
+                <StackPanel>
+                    <Button Content="Tasks" Click="TasksButton_Click" Margin="10"/>
+                    <Button Content="Branches" Click="BranchesButton_Click" Margin="10"/>
+                    <Button Content="Statistics" Click="StatisticsButton_Click" Margin="10"/>
+                </StackPanel>
+            </Grid>
         </Grid>
-
-        <Button Content="☰" Width="20" Height="20" Margin="10" Click="BurgerButton_Click" VerticalAlignment="Top" HorizontalAlignment="Left"/>
     </Grid>
 </Window>

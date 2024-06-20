@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TaskTracker.Model
+﻿namespace TaskTracker.Model
 {
     public class TaskStatistic
     {
@@ -23,6 +17,7 @@ namespace TaskTracker.Model
             ToDoTasks = tasks.Count(t => t.Status == TaskStatus.ToDo);
             OverdueTasks = tasks.Count(t => t.Status != TaskStatus.Done && t.DateEndTask < DateTime.Now);
             var completedTasks = tasks.Where(t => t.Status == TaskStatus.Done);
+
             if (completedTasks.Any())
             {
                 AverageCompletionTime = completedTasks.Average(t => (t.DateEndTask.Day - t.DateStartTask.Day));

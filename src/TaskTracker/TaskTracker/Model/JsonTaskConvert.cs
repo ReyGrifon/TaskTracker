@@ -9,8 +9,9 @@ namespace TaskTracker.Model
     {
         private static string _appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         private static string _path = $"{_appDataPath}\\TaskTracker";
-        private static string _fileName = "\\TaskTracker.notes";
-        private static string _filePath = _path + _fileName;
+        private static string _fileTasksName = "\\TaskTrackerTasks.notes";
+        private static string _fileBranchName = "\\TaskTrackerBranch.notes";
+        private static string _filePath;
         public static string Path
         {
             set
@@ -26,11 +27,19 @@ namespace TaskTracker.Model
         /// Сохраняет проект по пути _folderPath.
         /// </summary>
         /// <param name="project"></param>
-        public static void SaveProject(List<Task> project)
+        public static void SaveProject(object project)
         {
             if (!Directory.Exists(_path))
             {
                 Directory.CreateDirectory(_path);
+            }
+            if (project.GetType() == typeof(List<Task>)) 
+            {
+                _filePath = _path + _fileTasksName;
+            }
+            else
+            {
+                _filePath = _path + _fileBranchName;
             }
             if (!File.Exists(_filePath))
             {
@@ -43,16 +52,38 @@ namespace TaskTracker.Model
         /// Загружает данные из пути _folderPath.
         /// </summary>
         /// <returns></returns>
-        public static List<Task> LoadProject()
+        public static object LoadProject(Type projectType)
         {
             try
             {
+                if (projectType == typeof(Task))
+                {
+                    _filePath = _path + _fileTasksName;
+                }
+                else
+                {
+                    _filePath = _path + _fileBranchName;
+                }
                 string json = File.ReadAllText(_filePath);
-                return JsonConvert.DeserializeObject<List<Task>>(json);
+                if (projectType == typeof(Task))
+                {
+                    return JsonConvert.DeserializeObject<List<Task>>(json);
+                }
+                else
+                {
+                    return JsonConvert.DeserializeObject<List<TaskBranch>>(json);
+                }
             }
             catch (Exception e)
             {
-                return new List<Task>();
+                if (projectType == typeof(Task))
+                {
+                    return new List<Task>();
+                }
+                else
+                {
+                    return new List<TaskBranch>();
+                }
             }
 
         }
